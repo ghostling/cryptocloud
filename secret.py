@@ -1,3 +1,0 @@
-STORAGE_ACCOUNT_NAME = "jellah"
-PRIMARY_ACCESS_KEY = "4skJm7PcoxVKxN6AhLtFP4leZfJ/EBnXtnlZ5Vc5smxzY0Ki7dViSFQmDbeCbmird//y8Yr7kzGXB2AREwe2aw=="
-
