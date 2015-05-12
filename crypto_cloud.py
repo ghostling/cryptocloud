@@ -11,13 +11,17 @@ from cryptography.hazmat.primitives.ciphers import (
 )
 
 IV_LEN = 12
-blob_service = BlobService(account_name=secret.STORAGE_ACCOUNT_NAME,
-        account_key=secret.PRIMARY_ACCESS_KEY)
 key = open("key.txt","r").read()
 
+blob_service = BlobService(account_name=secret.STORAGE_ACCOUNT_NAME,
+        account_key=secret.PRIMARY_ACCESS_KEY)
+container_name = "testcontainer"
+
 def main(myopts):
+    blob_service.set_container_acl(container_name=container_name,
+            x_ms_blob_public_access='container')
+
     file_name = ""
-    container_name = ""
     function = ""
 
     for opt, obj in myopts:
@@ -27,8 +31,6 @@ def main(myopts):
         elif opt == "-d":
             file_name = obj
             function = "download"
-        elif opt == "-c":
-            container_name = obj
         elif opt == "-l":
             print "You want to list all the files"
             # Call option to list all files
@@ -37,13 +39,16 @@ def main(myopts):
                     "\n -u \t Filename of file to upload." + \
                     "\n -c \t Filename of container to add to."
     if function == "upload":
-        print "You want to upload %s to container %s" % (file_name, container_name)
-        upload_file(file_name, container_name)
+        print "You want to upload " + file_name
+        upload_file(file_name)
     elif function == "download":
-        print "You want to download %s to container %s" % (file_name, container_name)
-        download_file(file_name, container_name)
+        print "You want to download " + file_name
+        download_file(file_name)
 
-def download_file(file_name, container_name):
+    blob_service.set_container_acl(container_name=container_name,
+            x_ms_blob_public_access=None)
+
+def download_file(file_name):
     cipher_text = ""
     blob_service.get_blob_to_bytes(container_name, file_name, cipher_text)
     decrypted = decrypt_file(cipher_text)
@@ -51,7 +56,7 @@ def download_file(file_name, container_name):
     new_file.write(decrypted)
     new_file.close()
 
-def upload_file(file_name, container_name):
+def upload_file(file_name):
     if container_name not in blob_service.list_containers():
         blob_service.create_container(container_name)
 
