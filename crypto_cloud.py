@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives.ciphers import (
 IV_LEN = 12
 blob_service = BlobService(account_name=secret.STORAGE_ACCOUNT_NAME,
         account_key=secret.PRIMARY_ACCESS_KEY)
-key = open("key.txt","r")
+key = open("key.txt","r").read()
 
 def main(myopts):
     file_name = ""
